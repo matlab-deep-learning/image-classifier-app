@@ -1,0 +1,17 @@
+# Copyright 2025 The MathWorks, Inc.
+stages:
+  - run_matlab_tests
+
+run_matlab_tests:
+  stage: run_matlab_tests
+  script:
+    # Set up MATLAB 
+    # Run MATLAB tests
+    - 'echo "Running tests on BR2025a"'
+    - 'mw -using BR2025ad matlab -batch "cd test; cd unit; runUnitTests();"'
+  artifacts:
+    paths:
+    - test\unit\artifacts\2025a\results.xml
+    when: always
+  tags:
+    - GitlabWindowsRunner
