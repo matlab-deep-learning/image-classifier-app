@@ -1,20 +1,33 @@
 classdef Model < handle
     % Backend for image classification training.
+    %
+    % This class contains methods to perform the standard image
+    % classification workflow, using pretrained networks or custom-built
+    % networks. It is intended for usage from the Image Classifier App.
     
     %   Copyright 2025-2026 The MathWorks, Inc.
 
     properties
+        % ValidationFraction
+        % Fraction of data to use in the validation split. The rest of the
+        % data will be used in the training split.
         ValidationFraction = 0.3;
 
         % True if we are using a grayscale image with a 3-channel network,
         % e.g. an RGB pretrained SqueezeNet being used for grayscale image
-        % classification.
+        % classification. This requires specific settings for data
+        % augmentation.
         RequiresGray2RGB = false;
     end
 
     properties(Dependent, SetAccess = private)
+        % NumClasses
+        % Number of unique classes in the classification problem
         NumClasses
 
+        % ValidationLabels
+        % Returns a string vector of readable labels of the validation
+        % data, for example ["Mathworks Cap - 1"; "Mathworks Cap - 2"];
         ValidationLabels
     end
 
@@ -419,6 +432,7 @@ classdef Model < handle
         function value = get.ValidationLabels(this)
             % Returns readable validation labels, e.g. "Class1 - 1",
             % "Class1 - 2" etc.
+
             if ~isempty(this.Data)
                 labels = string(this.ValidationData.Labels);
                 classes = string(unique(this.ValidationData.Labels));
