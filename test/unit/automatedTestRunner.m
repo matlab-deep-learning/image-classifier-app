@@ -1,3 +1,8 @@
+% Runs app tests, for usage with a CI/CD test runner.
+%
+% This should not be used for interactively running tests in MATLAB. For
+% that, use image-classifier-app\test\runAppTests.m.
+
 % Copyright 2025 The MathWorks, Inc.
 
 import matlab.unittest.fixtures.PathFixture
