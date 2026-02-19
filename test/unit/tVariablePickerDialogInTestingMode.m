@@ -57,7 +57,7 @@ classdef tVariablePickerDialogInTestingMode < matlab.unittest.TestCase
         function testSelectImageDatastoreInTestingMode(test)
             % Create variables in base workspace
             evalin('base', ...
-            'w = "str"; x = matlab.io.datastore.ImageDatastore("dAfricanElephant.png"); y = cell(1);');
+            'w = "str"; x = matlab.io.datastore.ImageDatastore("sherlock.jpg"); y = cell(1);');
 
             % Filter: only ImageDatastore class
             filterFcn = @(v) strcmp(v.Class, "matlab.io.datastore.ImageDatastore");
