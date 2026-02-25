@@ -160,10 +160,16 @@ classdef tModel < matlab.unittest.TestCase
             test.verifyError(@()model.validateWorkspaceNetwork("net2"), ...
                 "ic:UninitializedNetwork");
 
-            % Not compatible with this data
+            % Wrong sort of input layer
             net3 = dlnetwork([featureInputLayer(5)]);
             test.setUpWorkspaceVar(net3, "net3");
             test.verifyError(@()model.validateWorkspaceNetwork("net3"), ...
+                "ic:WrongInputType");
+
+            % Not compatible with this data
+            net4 = dlnetwork([imageInputLayer([5 5])]);
+            test.setUpWorkspaceVar(net4, "net4");
+            test.verifyError(@()model.validateWorkspaceNetwork("net4"), ...
                 "ic:UnableToPredict");
 
             % Wrong output size

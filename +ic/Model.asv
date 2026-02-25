@@ -178,9 +178,6 @@ classdef Model < handle
             idx = randi(this.NumImages, numPreviewImages);
             for i=1:numPreviewImages
                 [img, label(i)] = this.getImageByIndex(idx(i));
-                if size(img, 3) == 1
-                    img = repmat(img, 1, 1, 3);
-                end
                 augmentedImages{i} = this.ImageAugmenter.augment(img);
             end
 
@@ -219,30 +216,12 @@ classdef Model < handle
             end
 
             % Check we can propagate data through the network.
-            inputLayer = getLayer(net, net.InputNames{1});
-            if ~isa(inputLayer, "nnet.cnn.layer.ImageInputLayer")
-                error("ic:WrongInputType", "Network '%s' does not have an image input layer.", varName);
-            end
+            inputLayer = getLayer(net, this.UntrainedNetwork.InputNames{1});
             networkInputSize = inputLayer.InputSize;
 
-            % Handle the case we have greyscale data, and we are trying to
-            % train on a 3-channel pretrained network.
-            colorPreprocessing = "none";
-            if numel(networkInputSize) > 2 && networkInputSize(3) == 3
-                % We have a 3-channel image network, probably pretrained
-                % RGB network
-                img = preview(this.Data);
-                if size(img, 3) == 1
-                    % We need gray2rgb color preprocessing
-                    colorPreprocessing = "gray2rgb";  
-                end
-            end
-
-            % Create augmented data
-            augImds = augmentedImageDatastore(networkInputSize(1:2), ...
-                this.TrainingData, ColorPreprocessing=colorPreprocessing);
-            result = read(augImds);
-            img = result.input{1};
+            augImds = augmentedImageDatastore(networkInputSize, this.TrainingData);
+            img = read(this.TrainingData);
+            augImds = 
             try
                 pred = predict(net, dlarray(single(img), "SSCB"));
             catch err
