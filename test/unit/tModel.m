@@ -204,7 +204,7 @@ classdef tModel < matlab.unittest.TestCase
             test.verifyEqual(model.TrainingOptions.MaxEpochs, 17);
         end
 
-        function trainsNetworK(test)
+        function trainsNetwork(test)
             % We should be able to train the network.
 
             model = test.createSpecimen();
@@ -214,6 +214,22 @@ classdef tModel < matlab.unittest.TestCase
             test.configureModelForFastTraining(model);
 
             test.assertEmpty(model.TrainedNetwork);
+            model.train();
+
+            test.verifyNotEmpty(model.TrainedNetwork);
+        end
+
+        function secondTrainingSuccessful(test)
+            % Training the model twice with no setting changes should work
+            % as intended.
+
+            model = test.createSpecimen();
+            test.importTestData(model);
+            model.setAugmentations(RandRotation=[-5 5]);
+            model.setNetworkFromPretrained("squeezenet");
+            test.configureModelForFastTraining(model);
+
+            model.train();
             model.train();
 
             test.verifyNotEmpty(model.TrainedNetwork);
